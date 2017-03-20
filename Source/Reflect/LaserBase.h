@@ -19,11 +19,15 @@ class REFLECT_API ALaserBase : public AActor
 	// Called when a blocking hit is detected.
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
-	// The initial speed of the bullet.
+	// The initial speed of the projectile.
 	UPROPERTY(EditDefaultsOnly, Category = "Laser")
 	float InitialSpeed;
 
-	// The minimum speed of the bullet before it gets killed.
+	// The maximum speed of the projectile.
+	UPROPERTY(EditDefaultsOnly, Category = "Laser")
+	float MaxSpeed;
+
+	// The minimum speed of the projectile before it gets killed.
 	UPROPERTY(EditDefaultsOnly, Category = "Laser")
 	float MinSpeed;
 
@@ -95,6 +99,8 @@ class REFLECT_API ALaserBase : public AActor
 	/* Blueprint Functions                 */
 	/***************************************/
 
+	//
+
 	// Gets the amount of times the projectile has bounced
 	UFUNCTION(BlueprintCallable, Category = "Laser")
 	int GetNumberOfBounces() const;
@@ -103,7 +109,47 @@ class REFLECT_API ALaserBase : public AActor
 	UFUNCTION(BlueprintCallable, Category = "Laser")
 	FVector GetVelocity() const;
 
-	// Bounces the projectile
+	// Gets the current speed of the projectile
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	float GetSpeed() const;
+
+	// Gets the current squared speed of the projectile
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	float GetSquaredSpeed() const;
+
+	/**
+	 * Sets the velocity of the projectile.
+	 * @param NewVelocity		The new velocity that the projectile should have.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	void SetVelocity(FVector NewVelocity);
+
+	/**
+	 * Sets the speed of the projectile.
+	 * @param NewSpeed			The new speed of the projectile.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	void SetSpeed(float NewSpeed);
+
+	/**
+	 * Sets the maximum speed that the projectile can have.
+	 * @param NewMaxSpeed		The new maximum speed that the projectile can have.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	void SetMaxSpeed(float NewMaxSpeed);
+
+	/**
+	 * Sets the minimum speed that the projectile can have before getting killed.
+	 * @param NewMinSpeed		The new minimum speed that the projectile can have.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	void SetMinSpeed(float NewMinSpeed);
+
+	/**
+	 * Bounces the projectile.
+	 * @param HitNormal			The normal vector of the impact.
+	 * @param BounceSpeed		The relative speed of the projectile after the bounce.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Laser")
 	void Bounce(FVector HitNormal, float BounceSpeed = 1.0f);
 
@@ -115,18 +161,20 @@ class REFLECT_API ALaserBase : public AActor
 	void Kill(bool Explode);
 
 	/**
-	* Changes the direction of the projectile.
-	* @param TargetDirection	The direction that the projectile moves towards.
-	* @param AngleSpeed		The speed at which the projectile changes direction.
+	* Rotates the direction of the projectile towards a new direction.
+	* @param NewDirection		The direction that the projectile moves towards.
+	* @param MaxAngle			The maximum allowed rotation angle.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Laser")
-	void ChangeDirection(FVector TargetDirection, float AngleSpeed);
+	void RotateVelocity(FVector NewDirection, float MaxAngle);
 
 	/**
-	* Stops the current change of direction.
-	*/
+	 * Adds a force to the projectile.
+	 * @param ForceDirection	The direction of the force.
+	 * @param Intensity			The intensity of the force.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Laser")
-	void StopChangeDirection();
+	void AddForce(FVector ForceDirection, float Intensity);
 
 	/***************************************/
 	/* Inaccessible members                */
@@ -134,27 +182,12 @@ class REFLECT_API ALaserBase : public AActor
 
 private:
 
+	// Array of affectors that the laser is currently overlapping.
+	TArray<AActor*> LaserAffectors;
+
 	// Amount of times the projectile has bounced.
 	int NumberOfBounces;
 
 	// The current velocity of the projectile.
 	FVector Velocity;
-
-	// The direction that the projectile is moving towards.
-	FVector TargetDir;
-
-	// The speed at which the projectile changes direction.
-	float DirectionChangeSpeed;
-
-	// Is the projectile currently changing direction.
-	bool bIsChangingDirection;
-
-	// The speed of the projectile before the ChangeDirection function is called.
-	float StartSpeed;
-
-	/**
-	* Calculates a new direction, determines by TargetDir and DirectionChangeSpeed.
-	* @param DeltaSeconds		Amount of seconds passed since last tick was called.
-	*/
-	void CalculateNewDirection(float DeltaSeconds);
 };

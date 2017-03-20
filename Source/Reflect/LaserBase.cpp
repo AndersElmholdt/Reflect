@@ -12,7 +12,8 @@ ALaserBase::ALaserBase(const FObjectInitializer& ObjectInitializer) : Super(Obje
 
 	// Default values
 	InitialSpeed = 600;
-	MinSpeed = 300;
+	MinSpeed = -1;
+	MaxSpeed = 800;
 	MaxBounces = 5;
 
 	InitialLifeSpan = 0;
@@ -65,8 +66,10 @@ void ALaserBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// Adjust the direction of the projectile
-	CalculateNewDirection(DeltaSeconds);
+	for (AActor* Affector : LaserAffectors)
+	{
+		ILaserAffector::Execute_LaserTick(Affector, this, DeltaSeconds);
+	}
 
 	// Check if projectile should be killed
 	if (Velocity.SizeSquared() < FMath::Square(MinSpeed))
@@ -80,37 +83,6 @@ void ALaserBase::Tick(float DeltaSeconds)
 
 	// Adjust the location according to the velocity
 	SetActorLocation(GetActorLocation() + Velocity * DeltaSeconds, true);
-}
-
-// Force inline to optimize performance
-FORCEINLINE
-void ALaserBase::CalculateNewDirection(float DeltaSeconds)
-{
-	if (bIsChangingDirection)
-	{
-		const FVector NormalizedVelocity = Velocity.GetSafeNormal();
-		const float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(NormalizedVelocity, TargetDir)));
-
-		// Snap direction to target direction if the current angle is smaller than can be rotated in this tick
-		if (Angle < DirectionChangeSpeed * DeltaSeconds)
-		{
-			Velocity = TargetDir * StartSpeed;
-		}
-		else
-		{
-			// Rotate the direction toward the target direction, aslong as the angle is not completely straight on
-			if (!FMath::IsWithin(Angle, 179.0f, 181.0f) && !FMath::IsWithin(Angle, -1.0f, 1.0f))
-			{
-				FVector Orthogonal = FVector::CrossProduct(NormalizedVelocity, TargetDir);
-				Velocity = Velocity.RotateAngleAxis(FMath::Sign(Angle) * DirectionChangeSpeed * DeltaSeconds, Orthogonal);
-			}
-			else
-			{
-				// Interpolate between the current velocity and the target direction
-				Velocity = FMath::Lerp(Velocity, TargetDir * StartSpeed, (DirectionChangeSpeed / 180) * DeltaSeconds);
-			}
-		}
-	}
 }
 
 int ALaserBase::GetNumberOfBounces() const
@@ -131,7 +103,7 @@ void ALaserBase::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, cla
 	if (Other->GetClass()->ImplementsInterface(ULaserBouncer::StaticClass()))
 	{
 		// Call ILaserBouncer's OnHit function
-		ILaserBouncer::Execute_OnHit(Other, this, HitNormal);
+		ILaserBouncer::Execute_LaserHit(Other, this, HitNormal);
 	}
 	else
 	{
@@ -160,7 +132,9 @@ void ALaserBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	if (OtherActor->GetClass()->ImplementsInterface(ULaserAffector::StaticClass()))
 	{
 		// Call ILaserAffector's OnBeginOverlap function
-		ILaserAffector::Execute_OnBeginOverlap(OtherActor, this);
+		ILaserAffector::Execute_LaserBeginOverlap(OtherActor, this);
+
+		LaserAffectors.Add(OtherActor);
 	}
 }
 
@@ -170,19 +144,91 @@ void ALaserBase::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (OtherActor->GetClass()->ImplementsInterface(ULaserAffector::StaticClass()))
 	{
 		// Call ILaserAffector's OnEndOverlap function
-		ILaserAffector::Execute_OnEndOverlap(OtherActor, this);
+		ILaserAffector::Execute_LaserEndOverlap(OtherActor, this);
+
+		LaserAffectors.Remove(OtherActor);
 	}
 }
 
-void ALaserBase::ChangeDirection(FVector TargetDirection, float AngleSpeed)
+void ALaserBase::RotateVelocity(FVector NewDirection, float MaxAngle)
 {
-	TargetDir = TargetDirection.GetSafeNormal();
-	DirectionChangeSpeed = AngleSpeed;
-	bIsChangingDirection = true;
-	StartSpeed = Velocity.Size();
+	MaxAngle = FMath::Clamp(MaxAngle, 0.0f, 180.0f);
+	
+	const FVector NormalizedVelocity = Velocity.GetSafeNormal();
+	const FVector NormalizedNewDirection = NewDirection.GetSafeNormal();
+	const float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(NormalizedVelocity, NormalizedNewDirection)));
+
+	// Snap direction to target direction if the current angle is smaller than max angle
+	if (Angle <= MaxAngle)
+	{
+		Velocity = NormalizedNewDirection * Velocity.Size();
+	}
+	else
+	{
+		FVector Orthogonal = FVector::CrossProduct(NormalizedVelocity, NormalizedNewDirection).GetSafeNormal();
+		if (Orthogonal.Equals(FVector::ZeroVector))
+		{
+			Orthogonal = FVector::UpVector;
+		}
+		
+		Velocity = Velocity.RotateAngleAxis(FMath::Sign(Angle) * MaxAngle, Orthogonal);
+	}
+	SetActorRotation(Velocity.Rotation());
 }
 
-void ALaserBase::StopChangeDirection()
+void ALaserBase::AddForce(FVector ForceDirection, float Intensity)
 {
-	bIsChangingDirection = false;
+	Velocity = Velocity + ForceDirection.GetSafeNormal() * Intensity;
+
+	if (Velocity.SizeSquared() > FMath::Square(MaxSpeed))
+	{
+		Velocity = Velocity.GetSafeNormal() * MaxSpeed;
+	}
+	SetActorRotation(Velocity.Rotation());
+}
+
+float ALaserBase::GetSpeed() const
+{
+	return Velocity.Size();
+}
+
+float ALaserBase::GetSquaredSpeed() const
+{
+	return Velocity.SizeSquared();
+}
+
+void ALaserBase::SetVelocity(FVector NewVelocity)
+{
+	if (NewVelocity.SizeSquared() < FMath::Square(MaxSpeed))
+	{
+		Velocity = NewVelocity;
+	}
+	else
+	{
+		Velocity = NewVelocity.GetSafeNormal() * MaxSpeed;
+	}
+	SetActorRotation(Velocity.Rotation());
+}
+
+void ALaserBase::SetSpeed(float NewSpeed)
+{
+	if (NewSpeed < MaxSpeed)
+	{
+		Velocity = Velocity.GetSafeNormal() * NewSpeed;
+	}
+	else
+	{
+		Velocity = Velocity.GetSafeNormal() * MaxSpeed;
+	}
+	SetActorRotation(Velocity.Rotation());
+}
+
+void ALaserBase::SetMaxSpeed(float NewMaxSpeed)
+{
+	MaxSpeed = NewMaxSpeed;
+}
+
+void ALaserBase::SetMinSpeed(float NewMinSpeed)
+{
+	MinSpeed = NewMinSpeed;
 }

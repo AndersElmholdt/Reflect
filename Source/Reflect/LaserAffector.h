@@ -23,15 +23,23 @@ public:
 	
 	/**
 	 * Called when a Laser starts overlapping with this object.
-	 * @param Laser		The laser object that started overlapping this object.
+	 * @param Laser			The laser object that started overlapping this object.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnBeginOverlap(ALaserBase* Laser);
+	void LaserBeginOverlap(ALaserBase* Laser);
 
 	/**
 	* Called when a Laser ends overlapping with this object.
-	* @param Laser		The laser object that ended overlapping this object.
+	* @param Laser			The laser object that ended overlapping this object.
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnEndOverlap(ALaserBase* Laser);
+	void LaserEndOverlap(ALaserBase* Laser);
+
+	/**
+	 * Called every frame for when the Laser is overlapping a certain object.
+	 * @param Laser			The laser object that is overlapping this object.
+	 * @param DeltaSeconds	Amount of time since last tick.
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void LaserTick(ALaserBase* Laser, float DeltaSeconds);
 };

@@ -27,5 +27,5 @@ public:
 	* @param HitNormal	The normal vector from the collision.
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnHit(ALaserBase* Laser, FVector HitNormal);
+	void LaserHit(ALaserBase* Laser, FVector HitNormal);
 };
