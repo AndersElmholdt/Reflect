@@ -15,6 +15,7 @@ ALaserBase::ALaserBase(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	MinSpeed = -1;
 	MaxSpeed = 800;
 	MaxBounces = 5;
+	BounceClampAngle = 5;
 
 	InitialLifeSpan = 0;
 	NumberOfBounces = 0;
@@ -114,6 +115,10 @@ void ALaserBase::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, cla
 void ALaserBase::Bounce(FVector HitNormal, float BounceSpeed)
 {
 	FVector ReflectedVelocity = BounceSpeed * (-2 * FVector::DotProduct(Velocity, HitNormal) * HitNormal + Velocity);
+
+	// Clamp angle to improve user's shots
+	ReflectedVelocity = ClampVectorAngle(ReflectedVelocity, HitNormal, BounceClampAngle);
+
 	Velocity = ReflectedVelocity;
 	ReflectedVelocity.Normalize();
 	SetActorRotation(ReflectedVelocity.Rotation());
@@ -231,4 +236,22 @@ void ALaserBase::SetMaxSpeed(float NewMaxSpeed)
 void ALaserBase::SetMinSpeed(float NewMinSpeed)
 {
 	MinSpeed = NewMinSpeed;
+}
+
+FORCEINLINE
+FVector ALaserBase::ClampVectorAngle(FVector InVector, FVector ForwardVector, int ClampAngle)
+{
+	if (ClampAngle > 0)
+	{
+		const FVector NormalizedInVector = InVector.GetSafeNormal();
+		const FVector NormalizedForwardVector = ForwardVector.GetSafeNormal();
+		const FVector UpVector = FVector::CrossProduct(NormalizedInVector, NormalizedForwardVector).GetSafeNormal();
+
+		const float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(NormalizedInVector, NormalizedForwardVector)));
+		const float SnappedAngle = FMath::GridSnap(Angle, ClampAngle);
+		const float DiffAngle = Angle - SnappedAngle;
+
+		return InVector.RotateAngleAxis(DiffAngle, UpVector);
+	}
+	return InVector;
 }

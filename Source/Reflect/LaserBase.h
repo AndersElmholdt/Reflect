@@ -35,6 +35,10 @@ class REFLECT_API ALaserBase : public AActor
 	UPROPERTY(EditDefaultsOnly, Category = "Laser")
 	int MaxBounces;
 
+	// Angle to clamp to when the laser bounces.
+	UPROPERTY(EditDefaultsOnly, Category = "Laser")
+	int BounceClampAngle;
+
 	// Called when the projectile starts overlapping another object.
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -42,6 +46,15 @@ class REFLECT_API ALaserBase : public AActor
 	// Called when the projectile ends overlapping another object.
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	/**
+	 * Clamps an incoming vector to a specific angle.
+	 * @param InVector			The incoming vector.
+	 * @param ForwardVector		Vector pointing forward.
+	 * @param ClampAngle		The angle to clamp to.
+	 */
+	UFUNCTION()
+	FVector ClampVectorAngle(FVector InVector, FVector ForwardVector, int ClampAngle);
 
 	/***************************************/
 	/* Components                          */
@@ -190,4 +203,5 @@ private:
 
 	// The current velocity of the projectile.
 	FVector Velocity;
+
 };
