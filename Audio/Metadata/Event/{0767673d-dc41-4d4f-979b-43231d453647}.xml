@@ -60,7 +60,7 @@
     <object class="MarkerTrack" id="{a9887933-3265-4866-93b5-62cf8126ae94}"/>
     <object class="GroupTrack" id="{34e840a5-65d8-4575-b535-029002dcfe88}">
         <relationship name="modules">
-            <destination>{3dfd8d7d-5872-4f2b-be05-2945be199a39}</destination>
+            <destination>{1763033c-d504-4bd6-b368-930119ac5333}</destination>
         </relationship>
         <relationship name="mixerGroup">
             <destination>{26845fe8-5fe7-4736-abb1-499ac2cbfb25}</destination>
@@ -68,7 +68,7 @@
     </object>
     <object class="Timeline" id="{3418a055-e9b5-48f2-b414-90c0e692638c}">
         <relationship name="modules">
-            <destination>{3dfd8d7d-5872-4f2b-be05-2945be199a39}</destination>
+            <destination>{1763033c-d504-4bd6-b368-930119ac5333}</destination>
         </relationship>
     </object>
     <object class="EventMixerMaster" id="{d5441df9-f4dc-41c0-bb2e-1147400f318d}">
@@ -91,17 +91,17 @@
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{fcd69f46-083b-4f1c-acad-267d453b19fa}"/>
-    <object class="MultiSound" id="{3dfd8d7d-5872-4f2b-be05-2945be199a39}">
+    <object class="MultiSound" id="{1763033c-d504-4bd6-b368-930119ac5333}">
         <property name="length">
             <value>2</value>
         </property>
         <relationship name="modulators">
-            <destination>{70a82853-45bd-41a8-8745-3bb22b85c3f3}</destination>
-            <destination>{a579ed99-58e7-43bc-b274-e00025b44404}</destination>
+            <destination>{9510ec48-f400-45fd-ab7b-224df7cae475}</destination>
+            <destination>{8ab56aa4-2559-4639-a4f7-76e31e4274b2}</destination>
         </relationship>
         <relationship name="sounds">
-            <destination>{f75e042a-4929-4436-a8e6-3d3ad4ae41d5}</destination>
-            <destination>{db9304ec-4ecb-4d78-ac05-6905f5812a07}</destination>
+            <destination>{417bcbc8-2873-4f90-8956-6dc14e406264}</destination>
+            <destination>{4031ee1e-0a5a-49b6-904f-a185f057423b}</destination>
         </relationship>
     </object>
     <object class="EventMixerGroup" id="{26845fe8-5fe7-4736-abb1-499ac2cbfb25}">
@@ -126,30 +126,30 @@
     </object>
     <object class="MixerBusPanner" id="{26059227-cf2e-49b2-ae10-ef7490c4f6f7}"/>
     <object class="MixerBusFader" id="{3e41d36e-e532-4f69-afe3-87e0ea58fcdf}"/>
-    <object class="RandomizerModulator" id="{70a82853-45bd-41a8-8745-3bb22b85c3f3}">
+    <object class="RandomizerModulator" id="{9510ec48-f400-45fd-ab7b-224df7cae475}">
         <property name="nameOfPropertyBeingModulated">
             <value>pitch</value>
         </property>
         <property name="amount">
-            <value>9.5</value>
+            <value>6</value>
         </property>
     </object>
-    <object class="RandomizerModulator" id="{a579ed99-58e7-43bc-b274-e00025b44404}">
+    <object class="RandomizerModulator" id="{8ab56aa4-2559-4639-a4f7-76e31e4274b2}">
         <property name="nameOfPropertyBeingModulated">
             <value>volume</value>
         </property>
         <property name="amount">
-            <value>11.5999994</value>
+            <value>5.19999981</value>
         </property>
     </object>
-    <object class="SingleSound" id="{f75e042a-4929-4436-a8e6-3d3ad4ae41d5}">
+    <object class="SingleSound" id="{417bcbc8-2873-4f90-8956-6dc14e406264}">
         <relationship name="audioFile">
-            <destination>{24a6de10-dbaa-4c31-b2e2-1e6fddc4842a}</destination>
+            <destination>{309aca17-876e-48fc-905c-b4fd11ac728d}</destination>
         </relationship>
     </object>
-    <object class="SingleSound" id="{db9304ec-4ecb-4d78-ac05-6905f5812a07}">
+    <object class="SingleSound" id="{4031ee1e-0a5a-49b6-904f-a185f057423b}">
         <relationship name="audioFile">
-            <destination>{897c476f-0ec3-4a4f-86a4-2c98edf5ee46}</destination>
+            <destination>{c0f42ba4-8b94-4a9d-8a8b-7d12f7669af8}</destination>
         </relationship>
     </object>
     <object class="MixerBusEffectChain" id="{a8d86938-954e-4389-9c3a-8b1f32023d89}">
