@@ -238,7 +238,7 @@ void ALaserBase::SetMinSpeed(float NewMinSpeed)
 	MinSpeed = NewMinSpeed;
 }
 
-FORCEINLINE
+//FORCEINLINE
 FVector ALaserBase::ClampVectorAngle(FVector InVector, FVector ForwardVector, int ClampAngle)
 {
 	if (ClampAngle > 0)
