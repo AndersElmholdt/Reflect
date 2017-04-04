@@ -112,12 +112,15 @@ void ALaserBase::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, cla
 	}
 }
 
-void ALaserBase::Bounce(FVector HitNormal, float BounceSpeed)
+void ALaserBase::Bounce(FVector HitNormal, float BounceSpeed, float ClampAngle)
 {
 	FVector ReflectedVelocity = BounceSpeed * (-2 * FVector::DotProduct(Velocity, HitNormal) * HitNormal + Velocity);
 
 	// Clamp angle to improve user's shots
-	ReflectedVelocity = ClampVectorAngle(ReflectedVelocity, HitNormal, BounceClampAngle);
+	if (ClampAngle != 0.0f)
+	{
+		ReflectedVelocity = ClampVectorAngle(ReflectedVelocity, HitNormal, ClampAngle);
+	}
 
 	Velocity = ReflectedVelocity;
 	ReflectedVelocity.Normalize();

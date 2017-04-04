@@ -162,9 +162,10 @@ class REFLECT_API ALaserBase : public AActor
 	 * Bounces the projectile.
 	 * @param HitNormal			The normal vector of the impact.
 	 * @param BounceSpeed		The relative speed of the projectile after the bounce.
+	 * @param ClampAngle		Clamps the reflected angle in multiples of this.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Laser")
-	void Bounce(FVector HitNormal, float BounceSpeed = 1.0f);
+	void Bounce(FVector HitNormal, float BounceSpeed = 1.0f, float ClampAngle = 0.0f);
 
 	/**
 	* Kills the projectile.
