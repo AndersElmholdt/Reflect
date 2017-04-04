@@ -121,6 +121,9 @@
         </relationship>
     </object>
     <object class="EventMixerGroup" id="{1292df87-c1c4-49ef-bc9b-20d0fa15be93}">
+        <property name="volume">
+            <value>-15</value>
+        </property>
         <property name="name">
             <value>Audio 1</value>
         </property>
@@ -175,7 +178,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>9.65217209</value>
+            <value>2.58695602</value>
         </property>
         <property name="curveShape">
             <value>0.240570843</value>
@@ -186,7 +189,7 @@
             <value>0.012908163265306118</value>
         </property>
         <property name="value">
-            <value>-24</value>
+            <value>-10.304348</value>
         </property>
     </object>
     <object class="MixerBusFader" id="{fb5ddc85-83b9-46c8-97d3-85c1fd5288c3}"/>

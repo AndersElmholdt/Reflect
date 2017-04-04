@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.01.09.00">
     <object class="Event" id="{7dbd146b-5b7b-45ed-8fab-474266af28f6}">
         <relationship name="selectables">
-            <destination>{38b6bed6-6de0-43ab-9513-8e8e028389b8}</destination>
+            <destination>{47e7e5bd-6fba-4dec-8a06-5b4356d47e36}</destination>
         </relationship>
         <relationship name="uiLastParameterSelection">
             <destination>{899c2dee-a127-433e-b3c5-9f4df48852d8}</destination>
@@ -19,7 +19,7 @@
     </object>
     <object class="Timeline" id="{899c2dee-a127-433e-b3c5-9f4df48852d8}">
         <property name="cursorPosition">
-            <value>0</value>
+            <value>0.0027380952380952383</value>
         </property>
         <property name="uiLastRulerScaleRatio">
             <value>0.00039115646258503401</value>
