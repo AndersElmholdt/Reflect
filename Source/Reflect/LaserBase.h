@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "FMODEvent.h"
 #include "LaserBase.generated.h"
 
 UCLASS()
@@ -38,6 +39,9 @@ class REFLECT_API ALaserBase : public AActor
 	// Angle to clamp to when the laser bounces.
 	UPROPERTY(EditDefaultsOnly, Category = "Laser")
 	int BounceClampAngle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Laser")
+	UFMODEvent* LaserExplosionEvent;
 
 	// Called when the projectile starts overlapping another object.
 	UFUNCTION()
@@ -190,11 +194,22 @@ class REFLECT_API ALaserBase : public AActor
 	UFUNCTION(BlueprintCallable, Category = "Laser")
 	void AddForce(FVector ForceDirection, float Intensity);
 
+	/**
+	 * Sets a goal direction of the laser.
+	 * @param NewGoalDirection	The direction the laser should move towards.
+	 * @param TransitionTime	How fast it should transition into the new direction.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Laser")
+	void SetGoalDirection(FVector NewGoalDirection, float TransitionTime);
+
 	/***************************************/
 	/* Inaccessible members                */
 	/***************************************/
 
 private:
+
+	// Updates the velocity of the laser, to move towards the goal
+	void MoveTowardsGoal();
 
 	// Array of affectors that the laser is currently overlapping.
 	TArray<AActor*> LaserAffectors;
@@ -204,5 +219,24 @@ private:
 
 	// The current velocity of the projectile.
 	FVector Velocity;
+
+	// The goal's normalized direction vector
+	FVector GoalDirection;
+
+	// The time it takes for the laser to redirect towards the goal
+	float GoalTransitionTime;
+
+	// The total amount of angle between the starting direction, and the goal direction
+	float TotalGoalAngle;
+
+	// How often the velocity is updated in MoveTowardsGoal()
+	const float GoalMovementTick = 1.0f / 144.0f;
+
+	// Handles the goal updates
+	FTimerHandle GoalTimer;
+
+	bool bIsAlive = true;
+
+	void DestroyLaser();
 
 };

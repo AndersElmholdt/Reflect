@@ -6,7 +6,7 @@ public class Reflect : ModuleRules
 {
 	public Reflect(TargetInfo Target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "FMODStudio" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

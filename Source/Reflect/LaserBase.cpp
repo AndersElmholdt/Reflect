@@ -4,6 +4,7 @@
 #include "LaserBase.h"
 #include "LaserBouncer.h"
 #include "LaserAffector.h"
+#include "FMODBlueprintStatics.h"
 
 
 ALaserBase::ALaserBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -67,23 +68,26 @@ void ALaserBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	for (AActor* Affector : LaserAffectors)
+	if (bIsAlive)
 	{
-		ILaserAffector::Execute_LaserTick(Affector, this, DeltaSeconds);
-	}
+		for (AActor* Affector : LaserAffectors)
+		{
+			ILaserAffector::Execute_LaserTick(Affector, this, DeltaSeconds);
+		}
 
-	// Check if projectile should be killed
-	if (Velocity.SizeSquared() < FMath::Square(MinSpeed))
-	{
-		Kill(false);
-	}
-	if (NumberOfBounces > MaxBounces)
-	{
-		Kill(true);
-	}
+		// Check if projectile should be killed
+		if (Velocity.SizeSquared() < FMath::Square(MinSpeed))
+		{
+			Kill(false);
+		}
+		if (NumberOfBounces > MaxBounces)
+		{
+			Kill(true);
+		}
 
-	// Adjust the location according to the velocity
-	SetActorLocation(GetActorLocation() + Velocity * DeltaSeconds, true);
+		// Adjust the location according to the velocity
+		SetActorLocation(GetActorLocation() + Velocity * DeltaSeconds, true);
+	}
 }
 
 int ALaserBase::GetNumberOfBounces() const
@@ -103,8 +107,15 @@ void ALaserBase::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, cla
 	// Check if the object it collided with implements the ILaserBouncer interface
 	if (Other->GetClass()->ImplementsInterface(ULaserBouncer::StaticClass()))
 	{
-		// Call ILaserBouncer's OnHit function
-		ILaserBouncer::Execute_LaserHit(Other, this, HitNormal);
+		if (NumberOfBounces + 1 <= MaxBounces)
+		{
+			// Call ILaserBouncer's OnHit function
+			ILaserBouncer::Execute_LaserHit(Other, this, HitNormal);
+		}
+		else
+		{
+			Kill(true);
+		}
 	}
 	else
 	{
@@ -130,8 +141,26 @@ void ALaserBase::Bounce(FVector HitNormal, float BounceSpeed, float ClampAngle)
 
 void ALaserBase::Kill(bool Explode)
 {
+	if (Explode)
+	{
+		ExplosionPCS->ActivateSystem();
+		Velocity = FVector::ZeroVector;
+		bIsAlive = false;
+		LightComp->DestroyComponent();
+		CollisionComp->DestroyComponent();
+		FTimerHandle DeathHandle;
+		UFMODBlueprintStatics::PlayEventAtLocation(this, LaserExplosionEvent, GetTransform(), true);
+		GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ALaserBase::DestroyLaser, 2.0f, false);
+	}
+	else
+	{
+		DestroyLaser();
+	}
+}
+
+void ALaserBase::DestroyLaser()
+{
 	Destroy();
-	// TODO: Add particle death if explode is true
 }
 
 void ALaserBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -257,4 +286,22 @@ FVector ALaserBase::ClampVectorAngle(FVector InVector, FVector ForwardVector, in
 		return InVector.RotateAngleAxis(DiffAngle, UpVector);
 	}
 	return InVector;
+}
+
+void ALaserBase::SetGoalDirection(FVector NewGoalDirection, float TransitionTime)
+{
+	GoalDirection = NewGoalDirection.GetSafeNormal();
+	TotalGoalAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(GoalDirection, Velocity.GetSafeNormal())));
+	GoalTransitionTime = TransitionTime;
+
+	GetWorld()->GetTimerManager().SetTimer(GoalTimer, this, &ALaserBase::MoveTowardsGoal, GoalMovementTick, true);
+}
+
+void ALaserBase::MoveTowardsGoal()
+{
+	RotateVelocity(GoalDirection, GoalMovementTick / GoalTransitionTime * TotalGoalAngle);
+	if (GoalDirection.Equals(Velocity.GetSafeNormal()))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(GoalTimer);
+	}
 }
