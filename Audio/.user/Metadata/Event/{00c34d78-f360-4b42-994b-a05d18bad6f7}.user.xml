@@ -18,13 +18,10 @@
     <object class="GroupTrack" id="{de2f9616-32c5-473d-a628-103c3e716d53}"/>
     <object class="Timeline" id="{ffaaa8ea-9395-4b44-af6b-b53e05cb5219}">
         <property name="cursorPosition">
-            <value>40.882500436071858</value>
+            <value>0</value>
         </property>
         <property name="uiLastRulerScaleRatio">
-            <value>0.081765000872143723</value>
-        </property>
-        <property name="uiLastHorizontalScrollBarValue">
-            <value>44</value>
+            <value>0.029914241077643566</value>
         </property>
     </object>
     <object class="EventMixerMaster" id="{5dfdf5fe-55d9-45e1-859e-36d0c877892e}">
