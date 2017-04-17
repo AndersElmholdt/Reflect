@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.09.00">
+    <object class="MixerGroup" id="{6cff2c80-a820-4f85-9d78-b39c9dee3b91}">
+        <property name="name">
+            <value>VoiceOver</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{cd72665c-be32-4415-b795-3b8836520cab}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{96134f2c-e6a6-4dc5-9525-d0c8e4d98646}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{39ce5f28-a999-42d2-a13d-e077bd793c63}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{cd72665c-be32-4415-b795-3b8836520cab}">
+        <relationship name="effects">
+            <destination>{fe1148ff-e581-489d-8523-32b0a221b8b5}</destination>
+            <destination>{1bfef5d7-ce72-49d5-9f5b-641e85100870}</destination>
+            <destination>{12a20a35-ed87-4188-a4d3-08c76675a96c}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{96134f2c-e6a6-4dc5-9525-d0c8e4d98646}"/>
+    <object class="MultibandEqEffect" id="{fe1148ff-e581-489d-8523-32b0a221b8b5}">
+        <property name="filterTypeA">
+            <value>9</value>
+        </property>
+        <property name="filterTypeB">
+            <value>9</value>
+        </property>
+        <property name="filterTypeC">
+            <value>9</value>
+        </property>
+        <property name="filterTypeD">
+            <value>9</value>
+        </property>
+        <property name="filterTypeE">
+            <value>8</value>
+        </property>
+        <property name="frequencyA">
+            <value>55.200367</value>
+        </property>
+        <property name="frequencyB">
+            <value>277.844482</value>
+        </property>
+        <property name="frequencyC">
+            <value>1090.64429</value>
+        </property>
+        <property name="frequencyD">
+            <value>2603.80005</value>
+        </property>
+        <property name="frequencyE">
+            <value>4949.39258</value>
+        </property>
+        <property name="qualityA">
+            <value>0.340000004</value>
+        </property>
+        <property name="qualityB">
+            <value>2.49999976</value>
+        </property>
+        <property name="qualityC">
+            <value>1.44999993</value>
+        </property>
+        <property name="qualityD">
+            <value>2.49999976</value>
+        </property>
+        <property name="gainA">
+            <value>-22.2413788</value>
+        </property>
+        <property name="gainB">
+            <value>-19.1379318</value>
+        </property>
+        <property name="gainC">
+            <value>9.3103447</value>
+        </property>
+        <property name="gainD">
+            <value>-5.6896553</value>
+        </property>
+        <property name="gainE">
+            <value>-7.75862122</value>
+        </property>
+    </object>
+    <object class="MixerBusFader" id="{1bfef5d7-ce72-49d5-9f5b-641e85100870}"/>
+    <object class="ThreeEQEffect" id="{12a20a35-ed87-4188-a4d3-08c76675a96c}">
+        <property name="lowGain">
+            <value>-26</value>
+        </property>
+        <property name="midGain">
+            <value>7</value>
+        </property>
+        <property name="highGain">
+            <value>-8.5</value>
+        </property>
+        <property name="lowCrossover">
+            <value>380</value>
+        </property>
+        <property name="highCrossover">
+            <value>3100</value>
+        </property>
+    </object>
+</objects>
