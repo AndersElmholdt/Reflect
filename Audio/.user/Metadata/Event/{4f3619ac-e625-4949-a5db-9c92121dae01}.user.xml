@@ -12,9 +12,12 @@
     <object class="GroupTrack" id="{0d4af0a5-a51d-4750-8132-aaaf5b04ac6b}"/>
     <object class="Timeline" id="{c5aa2c23-51d9-48fe-87db-b78dcf50a937}">
 <<<<<<< HEAD
+<<<<<<< HEAD
         <property name="cursorPosition">
             <value>13.355886332882275</value>
         </property>
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
         <property name="uiLastRulerScaleRatio">
