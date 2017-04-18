@@ -19,6 +19,7 @@
             <destination>{fe1148ff-e581-489d-8523-32b0a221b8b5}</destination>
             <destination>{1bfef5d7-ce72-49d5-9f5b-641e85100870}</destination>
             <destination>{12a20a35-ed87-4188-a4d3-08c76675a96c}</destination>
+            <destination>{a52c3e14-0278-45ba-9fca-56c612fb41e0}</destination>
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{96134f2c-e6a6-4dc5-9525-d0c8e4d98646}"/>
@@ -45,7 +46,7 @@
             <value>277.844482</value>
         </property>
         <property name="frequencyC">
-            <value>1090.64429</value>
+            <value>1068.27954</value>
         </property>
         <property name="frequencyD">
             <value>2603.80005</value>
@@ -72,7 +73,7 @@
             <value>-19.1379318</value>
         </property>
         <property name="gainC">
-            <value>9.3103447</value>
+            <value>3.10344815</value>
         </property>
         <property name="gainD">
             <value>-5.6896553</value>
@@ -97,6 +98,11 @@
         </property>
         <property name="highCrossover">
             <value>3100</value>
+        </property>
+    </object>
+    <object class="LimiterEffect" id="{a52c3e14-0278-45ba-9fca-56c612fb41e0}">
+        <property name="boost">
+            <value>4.39999962</value>
         </property>
     </object>
 </objects>
