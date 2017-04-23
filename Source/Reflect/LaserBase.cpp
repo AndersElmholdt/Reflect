@@ -149,7 +149,7 @@ void ALaserBase::Kill(bool Explode)
 		LightComp->DestroyComponent();
 		CollisionComp->DestroyComponent();
 		FTimerHandle DeathHandle;
-		UFMODBlueprintStatics::PlayEventAtLocation(this, LaserExplosionEvent, GetTransform(), true);
+		//UFMODBlueprintStatics::PlayEventAtLocation(this, LaserExplosionEvent, GetTransform(), true);
 		GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ALaserBase::DestroyLaser, 2.0f, false);
 	}
 	else
