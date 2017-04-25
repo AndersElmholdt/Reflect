@@ -148,9 +148,11 @@ void ALaserBase::Kill(bool Explode)
 		bIsAlive = false;
 		LightComp->DestroyComponent();
 		CollisionComp->DestroyComponent();
+		TrailPCS->DeactivateSystem();
 		FTimerHandle DeathHandle;
 		//UFMODBlueprintStatics::PlayEventAtLocation(this, LaserExplosionEvent, GetTransform(), true);
 		GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ALaserBase::DestroyLaser, 2.0f, false);
+		OnExplode();
 	}
 	else
 	{

@@ -202,6 +202,9 @@ class REFLECT_API ALaserBase : public AActor
 	UFUNCTION(BlueprintCallable, Category = "Laser")
 	void SetGoalDirection(FVector NewGoalDirection, float TransitionTime);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Laser")
+	void OnExplode();
+
 	/***************************************/
 	/* Inaccessible members                */
 	/***************************************/
